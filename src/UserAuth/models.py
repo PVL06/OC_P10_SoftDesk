@@ -5,15 +5,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class CustomUserManager(UserManager):
-    def _create_user(self, username, password, age, can_be_contacted, can_data_be_shared, **extra_fields):
-        if not username:
-            raise ValueError("username required")
 
+    def _create_user(self, username, password, **extra_fields):
         user = self.model(
             username=username,
-            age=age,
-            can_be_contacted=can_be_contacted,
-            can_data_be_shared=can_data_be_shared,
             **extra_fields
         )
         user.set_password(password)
@@ -34,7 +29,10 @@ class CustomUserManager(UserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=20, unique=True)
     age = models.IntegerField(
-        validators=[MinValueValidator(15), MaxValueValidator(150)]
+        validators=[
+            MinValueValidator(15),
+            MaxValueValidator(150)
+        ]
     )
     can_be_contacted = models.BooleanField(default=False)
     can_data_be_shared = models.BooleanField(default=False)
