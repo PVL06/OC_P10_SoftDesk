@@ -28,12 +28,7 @@ class CustomUserManager(UserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=20, unique=True)
-    age = models.IntegerField(
-        validators=[
-            MinValueValidator(15),
-            MaxValueValidator(150)
-        ]
-    )
+    age = models.IntegerField()
     can_be_contacted = models.BooleanField(default=False)
     can_data_be_shared = models.BooleanField(default=False)
 

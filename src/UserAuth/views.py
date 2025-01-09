@@ -1,8 +1,9 @@
-from rest_framework import status
+from django.contrib.auth import get_user_model
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from UserAuth.serializers import UserRegistrationSerializer
+from UserAuth.serializers import UserRegistrationSerializer, UserSerializer
 
 
 class UserRegistrationView(APIView):
@@ -14,8 +15,14 @@ class UserRegistrationView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        
-        if 'age' in serializer.errors:
-            serializer.errors['age'].append('You must be over 15 years old.')
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class UserViewset(viewsets.ModelViewSet):
+
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        users = get_user_model()
+        return users.objects.all()
