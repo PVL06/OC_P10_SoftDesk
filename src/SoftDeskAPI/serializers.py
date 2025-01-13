@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from SoftDeskAPI.models import User
+from SoftDeskAPI.models import User, Project
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,3 +31,21 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(err.messages)
         else:
             return make_password(value)
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Project
+        fields = [
+            'id',
+            'name',
+            'description',
+            'type',
+            'author',
+            'created_time'
+        ]
+        extra_kwargs = {
+            'author': {'read_only': True},
+            'created_time': {'read_only': True}
+        }

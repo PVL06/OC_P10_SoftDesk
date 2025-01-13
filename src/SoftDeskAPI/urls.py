@@ -2,10 +2,11 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 from rest_framework import routers
 
-from SoftDeskAPI.views import UserViewset
+from SoftDeskAPI.views import UserViewset, ProjectViewset
 
 router = routers.SimpleRouter()
 router.register('user', UserViewset, basename='user')
+router.register('project', ProjectViewset, basename='project')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -42,3 +42,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+
+class Project(models.Model):
+
+    class ProjectType(models.TextChoices):
+        BACKEND = 'backend'
+        FRONTEND = 'Frontend'
+        IOS = 'ios'
+        ANDROID = "android"
+
+    name = models.CharField(max_length=64, unique=True)
+    description = models.TextField()
+    type = models.CharField(choices=ProjectType.choices, max_length=16)
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    created_time = models.DateTimeField(auto_now_add=True)
