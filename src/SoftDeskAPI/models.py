@@ -56,3 +56,12 @@ class Project(models.Model):
     type = models.CharField(choices=ProjectType.choices, max_length=16)
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
+
+
+class Contributors(models.Model):
+
+    project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE, name='project_id')
+    contributor_id = models.ForeignKey(to=User, on_delete=models.CASCADE, name='contributor_id')
+
+    class Meta:
+        unique_together = ('project_id', 'contributor_id')
