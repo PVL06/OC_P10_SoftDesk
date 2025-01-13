@@ -3,10 +3,10 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from UserAuth.models import User
+from SoftDeskAPI.models import User
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
@@ -31,15 +31,3 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(err.messages)
         else:
             return make_password(value)
-        
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = [
-            'username',
-            'age',
-            'can_be_contacted',
-            'can_data_be_shared',
-        ]

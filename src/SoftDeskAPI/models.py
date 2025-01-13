@@ -1,16 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
 from django.utils import timezone
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class CustomUserManager(UserManager):
 
     def _create_user(self, username, password, **extra_fields):
-        user = self.model(
-            username=username,
-            **extra_fields
-        )
+        user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -42,4 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['age', 'can_be_contacted', 'can_data_be_shared']
+
+    def __str__(self):
+        return self.username
 
