@@ -1,9 +1,10 @@
 from rest_framework import permissions
+from django.shortcuts import get_object_or_404
 
-ERROR_MESSAGE = 'You are not authorized for this action'
+from SoftDeskAPI.models import Contributors
+
 
 class UserPermissions(permissions.BasePermission):
-    message = ERROR_MESSAGE
 
     def has_permission(self, request, view):
         if view.action == 'create' and request.user.is_anonymous:
@@ -11,7 +12,7 @@ class UserPermissions(permissions.BasePermission):
         elif view.action != 'create' and request.user.is_authenticated:
             return True
         return False
-        
+
     def has_object_permission(self, request, view, obj):
         actions = ('partial_update', 'destroy')
         if view.action in actions and request.user == obj:
@@ -22,22 +23,16 @@ class UserPermissions(permissions.BasePermission):
 
 
 class ProjectPermissions(permissions.BasePermission):
-    message = ERROR_MESSAGE
 
-    def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return True
-        return False
-    
     def has_object_permission(self, request, view, obj):
-        actions = ('partial_update', 'destroy')
-        permissions = [
-            view.action in actions and request.user == obj.author,
-            view.action == 'retrieve' # todo verifier si l'user est dans les contributeurs
-        ]
-        if any(permissions):
+        is_contributor = Contributors.objects.filter(
+            project_id=obj,
+            contributor_id=request.user
+        ).exists()
+        author_actions = ('partial_update', 'destroy')
+
+        if view.action == 'retrieve' and is_contributor:
+            return True
+        elif view.action in author_actions and request.user == obj.author:
             return True
         return False
-
-class ContributorPermission(permissions.BasePermission):
-    message = ERROR_MESSAGE
