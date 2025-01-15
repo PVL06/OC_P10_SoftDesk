@@ -4,9 +4,9 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer
+from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer, IssueSerializer
 from SoftDeskAPI.permissions import UserPermissions, ProjectPermissions
-from SoftDeskAPI.models import User, Project, Contributors
+from SoftDeskAPI.models import User, Project, Contributors, Issue
 
 
 class UserViewset(viewsets.ModelViewSet):
@@ -67,3 +67,18 @@ class ProjectViewset(viewsets.ModelViewSet, ProjectActions):
         project = get_object_or_404(Project, pk=serializer.data.get('id'))
         user = get_object_or_404(User, id=self.request.user.pk)
         Contributors.objects.create(project_id=project, contributor_id=user)
+
+
+class IssueViewset(viewsets.ModelViewSet):
+    serializer_class = IssueSerializer
+
+    queryset = Issue.objects.all()
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        project_id = self.kwargs.get('project_pk')
+        serializer.save(
+            project=Project.objects.get(pk=project_id),
+            author=self.request.user,
+            assigned_user=self.request.user
+        )

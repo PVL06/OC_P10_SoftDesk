@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
-from SoftDeskAPI.models import Project
+from SoftDeskAPI.models import Project, Issue
 
 
 @admin.register(get_user_model())
@@ -23,6 +23,22 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = (
         'author',
         'name',
+        'created_time'
+    )
+    search_fields = ('username',)
+    list_per_page = 50
+
+
+@admin.register(Issue)
+class IssueAdmin(admin.ModelAdmin):
+    list_display = (
+        'project',
+        'name',
+        'priority',
+        'tag',
+        'status',
+        'author',
+        'assigned_user',
         'created_time'
     )
     search_fields = ('username',)

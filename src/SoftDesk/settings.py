@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'SoftDeskAPI',
+    'rest_framework_nested',
     'django_extensions',
 ]
 

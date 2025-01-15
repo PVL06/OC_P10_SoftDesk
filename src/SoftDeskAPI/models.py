@@ -84,3 +84,42 @@ class Contributors(models.Model):
             contributor_id=user,
             project_id=project_pk
         ).exists()
+
+
+class Issue(models.Model):
+
+    class PriorityType(models.TextChoices):
+        LOW = 'low'
+        MEDIUM = 'medium'
+        HIGH = 'high'
+
+    class TagType(models.TextChoices):
+        BUG = 'bug'
+        FEATURE = 'feature'
+        TASK = 'task'
+
+    class StatusType(models.TextChoices):
+        TODO = 'todo'
+        IN_PROGRESS = 'in_progress'
+        FINISHED = 'finished'
+
+    project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=64, unique=True)
+    description = models.TextField()
+    priority = models.CharField(choices=PriorityType.choices, max_length=16)
+    tag = models.CharField(choices=TagType.choices, max_length=16)
+    status = models.CharField(choices=StatusType.choices, max_length=16)
+    author = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='issue_author'
+    )
+    assigned_user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='issue_assigned_user'
+    )
+    created_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
