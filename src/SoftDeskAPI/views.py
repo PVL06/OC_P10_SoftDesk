@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer
 from SoftDeskAPI.permissions import UserPermissions, ProjectPermissions
@@ -67,6 +67,7 @@ class ProjectViewset(viewsets.ModelViewSet, ProjectActions):
         project = Project.objects.all()
         return project
     
+    @transaction.atomic
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
         project = get_object_or_404(Project, pk=serializer.data.get('id'))

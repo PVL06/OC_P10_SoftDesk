@@ -47,7 +47,7 @@ class Project(models.Model):
 
     class ProjectType(models.TextChoices):
         BACKEND = 'backend'
-        FRONTEND = 'Frontend'
+        FRONTEND = 'frontend'
         IOS = 'ios'
         ANDROID = "android"
 
@@ -60,8 +60,8 @@ class Project(models.Model):
 
 class Contributors(models.Model):
 
-    project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE, name='project_id')
-    contributor_id = models.ForeignKey(to=User, on_delete=models.CASCADE, name='contributor_id')
+    project = models.ForeignKey(to=Project, on_delete=models.CASCADE, name='project_id')
+    contributor = models.ForeignKey(to=User, on_delete=models.CASCADE, name='contributor_id')
 
     class Meta:
         unique_together = ('project_id', 'contributor_id')
