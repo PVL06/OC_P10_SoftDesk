@@ -42,6 +42,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+    @classmethod
+    def get_user_by_username(cls, username):
+        return cls.objects.get(username=username)
+
 
 class Project(models.Model):
 
@@ -60,8 +64,23 @@ class Project(models.Model):
 
 class Contributors(models.Model):
 
-    project = models.ForeignKey(to=Project, on_delete=models.CASCADE, name='project_id')
-    contributor = models.ForeignKey(to=User, on_delete=models.CASCADE, name='contributor_id')
+    project = models.ForeignKey(
+        to=Project,
+        on_delete=models.CASCADE,
+        name='project_id'
+    )
+    contributor = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        name='contributor_id'
+    )
 
     class Meta:
         unique_together = ('project_id', 'contributor_id')
+
+    @classmethod
+    def check_user_in_project(cls, user, project_pk):
+        return cls.objects.filter(
+            contributor_id=user,
+            project_id=project_pk
+        ).exists()

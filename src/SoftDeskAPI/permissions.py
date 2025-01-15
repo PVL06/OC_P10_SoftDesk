@@ -1,5 +1,4 @@
 from rest_framework import permissions
-from django.shortcuts import get_object_or_404
 
 from SoftDeskAPI.models import Contributors
 
@@ -7,17 +6,21 @@ from SoftDeskAPI.models import Contributors
 class UserPermissions(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        if view.action == 'create' and request.user.is_anonymous:
-            return True
-        elif view.action != 'create' and request.user.is_authenticated:
+        conditions = [
+            view.action == 'create' and request.user.is_anonymous,
+            view.action != 'create' and request.user.is_authenticated
+        ]
+        if any(conditions):
             return True
         return False
 
     def has_object_permission(self, request, view, obj):
         actions = ('partial_update', 'destroy')
-        if view.action in actions and request.user == obj:
-            return True
-        elif view.action == 'retrieve':
+        conditions = [
+            view.action in actions and request.user == obj,
+            view.action == 'retrieve'
+        ]
+        if any(conditions):
             return True
         return False
 
@@ -25,14 +28,15 @@ class UserPermissions(permissions.BasePermission):
 class ProjectPermissions(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        is_contributor = Contributors.objects.filter(
-            project_id=obj,
-            contributor_id=request.user
-        ).exists()
+        is_contributor = Contributors.check_user_in_project(
+            user=request.user,
+            project_pk=obj.pk
+        )
         author_actions = ('partial_update', 'destroy')
-
-        if view.action == 'retrieve' and is_contributor:
-            return True
-        elif view.action in author_actions and request.user == obj.author:
+        conditions = [
+            view.action == 'retrieve' and is_contributor,
+            view.action in author_actions and request.user == obj.author
+        ]
+        if any(conditions):
             return True
         return False
