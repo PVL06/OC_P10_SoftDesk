@@ -18,7 +18,20 @@ class UserViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return User.objects.all()
 
-class ProjectActions:
+
+class ProjectViewset(viewsets.ModelViewSet):
+    serializer_class = ProjectSerializer
+    permission_classes = [ProjectPermissions]
+
+    queryset = Project.objects.all()
+    
+    @transaction.atomic
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+        project = get_object_or_404(Project, pk=serializer.data.get('id'))
+        user = get_object_or_404(User, id=self.request.user.pk)
+        Contributors.objects.create(project_id=project, contributor_id=user)    
+
     @action(detail=True, methods=['post'])
     def add_contributor(self, request, pk=None):
         project = get_object_or_404(Project, pk=pk)
@@ -51,22 +64,6 @@ class ProjectActions:
         return Response(
             {'detail': f'The user {contributor} has been deleted to the contributors'},
         )
-
-
-class ProjectViewset(viewsets.ModelViewSet, ProjectActions):
-    serializer_class = ProjectSerializer
-    permission_classes = [ProjectPermissions]
-
-    def get_queryset(self):
-        project = Project.objects.all()
-        return project
-    
-    @transaction.atomic
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-        project = get_object_or_404(Project, pk=serializer.data.get('id'))
-        user = get_object_or_404(User, id=self.request.user.pk)
-        Contributors.objects.create(project_id=project, contributor_id=user)
 
 
 class IssueViewset(viewsets.ModelViewSet):

@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(err.messages)
         else:
             return make_password(value)
+    # todo validation sur le username avec nb de caractère minimum
 
 
 class ProjectSerializer(serializers.ModelSerializer):

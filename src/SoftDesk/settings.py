@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'SoftDeskAPI',
     'rest_framework_nested',
+    'SoftDeskAPI',
     'django_extensions',
 ]
 

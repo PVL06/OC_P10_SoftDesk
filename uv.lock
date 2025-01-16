@@ -66,6 +66,19 @@ wheels = [
 ]
 
 [[package]]
+name = "drf-nested-routers"
+version = "0.94.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "djangorestframework" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1e/24/9e6a070dc491a416c93e4ec41950c7ea66d6a63b8db8d8abc0c128355978/drf-nested-routers-0.94.1.tar.gz", hash = "sha256:2b846385ed95c9f17bf4242db3b264ac826b5af00dda6c737d3fe7cc7bf2c7db", size = 18347 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/a2/313a95268ffae9773a59aeb15c3f6932d4c905616d4797b371e6257fc8f9/drf_nested_routers-0.94.1-py2.py3-none-any.whl", hash = "sha256:3a8ec45a025c0f39188ec1ec415244beb875a6f4db87911a1f5a606d09b68c9f", size = 36260 },
+]
+
+[[package]]
 name = "oc-p10-softdesk"
 version = "0.1.0"
 source = { virtual = "." }
@@ -74,6 +87,7 @@ dependencies = [
     { name = "django-extensions" },
     { name = "djangorestframework" },
     { name = "djangorestframework-simplejwt" },
+    { name = "drf-nested-routers" },
 ]
 
 [package.metadata]
@@ -82,6 +96,7 @@ requires-dist = [
     { name = "django-extensions", specifier = ">=3.2.3" },
     { name = "djangorestframework", specifier = ">=3.15.2" },
     { name = "djangorestframework-simplejwt", specifier = ">=5.4.0" },
+    { name = "drf-nested-routers", specifier = ">=0.94.1" },
 ]
 
 [[package]]
