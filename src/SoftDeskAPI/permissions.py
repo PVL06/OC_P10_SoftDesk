@@ -29,7 +29,17 @@ class ProjectPermissions(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.user.is_authenticated:
-            return True
+            project_id = view.kwargs.get('project_pk')
+            is_contributor = Contributors.check_user_in_project(
+                user=request.user,
+                project_pk=project_id
+            )
+            conditions = [
+                project_id == None,
+                is_contributor
+            ]
+            if any(conditions):
+                return True
         return False
 
     def has_object_permission(self, request, view, obj):

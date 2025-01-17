@@ -55,6 +55,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class IssueSerializer(serializers.ModelSerializer):
 
+    author = serializers.CharField(
+        source='author.username',
+        read_only=True
+    )
+    assigned_user = serializers.CharField(
+        source='assigned_user.username',
+        read_only=True
+    )
+
     class Meta:
         model = Issue
         fields = [
@@ -69,7 +78,5 @@ class IssueSerializer(serializers.ModelSerializer):
             'created_time'
         ]
         extra_kwargs = {
-            'author': {'read_only': True},
-            'assigned_user': {'read_only': True},
             'created_time': {'read_only': True} 
         }

@@ -27,6 +27,7 @@ class ProjectViewset(viewsets.ModelViewSet):
             Q(project__contributor=self.request.user)
         )
     
+    
     @transaction.atomic
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -72,7 +73,8 @@ class IssueViewset(viewsets.ModelViewSet):
     serializer_class = IssueSerializer
     permission_classes = [ProjectPermissions]
 
-    queryset = Issue.objects.all()
+    def get_queryset(self):
+        return Issue.objects.filter(project=self.kwargs.get('project_pk'))
 
     @transaction.atomic
     def perform_create(self, serializer):
