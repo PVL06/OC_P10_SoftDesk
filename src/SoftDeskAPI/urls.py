@@ -8,10 +8,10 @@ user_router = routers.SimpleRouter()
 user_router.register('', UserViewset, basename='user')
 
 project_router = routers.SimpleRouter()
-project_router.register(r'project', ProjectViewset, basename='project')
+project_router.register('project', ProjectViewset, basename='project')
 
 issue_router = routers.NestedSimpleRouter(project_router, r'project', lookup='project')
-issue_router.register(r'issue', IssueViewset, basename='issue')
+issue_router.register('issue', IssueViewset, basename='issue')
 
 urlpatterns = [
     path('', include(project_router.urls)),
