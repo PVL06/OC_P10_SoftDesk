@@ -36,6 +36,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
 
+    author = serializers.CharField(source='author.username', read_only=True)
+
     class Meta:
         model = Project
         fields = [
@@ -47,7 +49,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             'created_time'
         ]
         extra_kwargs = {
-            'author': {'read_only': True},
             'created_time': {'read_only': True}
         }
 

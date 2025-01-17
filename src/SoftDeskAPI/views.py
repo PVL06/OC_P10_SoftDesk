@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -7,30 +8,31 @@ from rest_framework.decorators import action
 from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer, IssueSerializer
 from SoftDeskAPI.permissions import UserPermissions, ProjectPermissions
 from SoftDeskAPI.models import User, Project, Contributors, Issue
+from rest_framework import serializers
 
 
 class UserViewset(viewsets.ModelViewSet):
 
     serializer_class = UserSerializer
     permission_classes = [UserPermissions]
-
-    #todo voir si besoin d'une fonction pour les filtres sinon repasser en queryset = User.objects.all()
-    def get_queryset(self):
-        return User.objects.all()
+    queryset = User.objects.all()
 
 
 class ProjectViewset(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [ProjectPermissions]
 
-    queryset = Project.objects.all()
+    def get_queryset(self):
+        return Project.objects.filter(
+            Q(project__contributor=self.request.user)
+        )
     
     @transaction.atomic
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
         project = get_object_or_404(Project, pk=serializer.data.get('id'))
         user = get_object_or_404(User, id=self.request.user.pk)
-        Contributors.objects.create(project_id=project, contributor_id=user)    
+        Contributors.objects.create(project=project, contributor=user)    
 
     @action(detail=True, methods=['post'])
     def add_contributor(self, request, pk=None):
@@ -44,7 +46,7 @@ class ProjectViewset(viewsets.ModelViewSet):
                 {'detail': 'This user is already a contributor'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        Contributors.objects.create(project_id=project, contributor_id=new_contributor)
+        Contributors.objects.create(project=project, contributor=new_contributor)
         return Response(
             {'detail': f'The user {new_contributor} has been added to the contributors'}
         )
@@ -60,7 +62,7 @@ class ProjectViewset(viewsets.ModelViewSet):
                 {'detail': f'{contributor} is not a contributor for this project'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        Contributors.objects.filter(project_id=pk, contributor_id=contributor).delete()
+        Contributors.objects.filter(project=pk, contributor=contributor).delete()
         return Response(
             {'detail': f'The user {contributor} has been deleted to the contributors'},
         )
@@ -68,14 +70,20 @@ class ProjectViewset(viewsets.ModelViewSet):
 
 class IssueViewset(viewsets.ModelViewSet):
     serializer_class = IssueSerializer
+    permission_classes = [ProjectPermissions]
 
     queryset = Issue.objects.all()
 
     @transaction.atomic
     def perform_create(self, serializer):
-        project_id = self.kwargs.get('project_pk')
+        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
+        assigned_user = User.get_user_by_username(self.request.POST.get('assigned_user'))
+        if not Contributors.check_user_in_project(assigned_user, project):
+            raise serializers.ValidationError(
+                {'detail': f'{assigned_user} is not a contributor to the project'}
+            )
         serializer.save(
-            project=Project.objects.get(pk=project_id),
+            project=project,
             author=self.request.user,
-            assigned_user=self.request.user
+            assigned_user=assigned_user
         )

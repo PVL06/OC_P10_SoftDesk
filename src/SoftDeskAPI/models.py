@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
 from django.utils import timezone
 
@@ -44,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @classmethod
     def get_user_by_username(cls, username):
-        return cls.objects.get(username=username)
+        return get_object_or_404(cls, username=username)
 
 
 class Project(models.Model):
@@ -67,16 +68,16 @@ class Contributors(models.Model):
     project = models.ForeignKey(
         to=Project,
         on_delete=models.CASCADE,
-        name='project_id'
+        related_name='project'
     )
     contributor = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        name='contributor_id'
+        related_name='contributor'
     )
 
     class Meta:
-        unique_together = ('project_id', 'contributor_id')
+        unique_together = ('project', 'contributor')
 
     @classmethod
     def check_user_in_project(cls, user, project_pk):

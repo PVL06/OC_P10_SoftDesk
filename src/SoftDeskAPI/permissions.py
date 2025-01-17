@@ -27,16 +27,22 @@ class UserPermissions(permissions.BasePermission):
 
 class ProjectPermissions(permissions.BasePermission):
 
-    def has_object_permission(self, request, view, obj):
-        is_contributor = Contributors.check_user_in_project(
-            user=request.user,
-            project_pk=obj.pk
-        )
-        author_actions = ('partial_update', 'destroy')
-        conditions = [
-            view.action == 'retrieve' and is_contributor,
-            view.action in author_actions and request.user == obj.author
-        ]
-        if any(conditions):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
             return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated:
+            is_contributor = Contributors.check_user_in_project(
+                user=request.user,
+                project_pk=obj.pk
+            )
+            author_actions = ('partial_update', 'destroy')
+            conditions = [
+                view.action == 'retrieve' and is_contributor,
+                view.action in author_actions and request.user == obj.author
+            ]
+            if any(conditions):
+                return True
         return False
