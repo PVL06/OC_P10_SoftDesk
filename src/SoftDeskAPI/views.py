@@ -5,9 +5,9 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer, IssueSerializer
+from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer, IssueSerializer, CommentSerializer
 from SoftDeskAPI.permissions import UserPermissions, ProjectPermissions
-from SoftDeskAPI.models import User, Project, Contributors, Issue
+from SoftDeskAPI.models import User, Project, Contributors, Issue, Comment
 from rest_framework import serializers
 
 
@@ -26,7 +26,6 @@ class ProjectViewset(viewsets.ModelViewSet):
         return Project.objects.filter(
             Q(project__contributor=self.request.user)
         )
-    
     
     @transaction.atomic
     def perform_create(self, serializer):
@@ -88,4 +87,21 @@ class IssueViewset(viewsets.ModelViewSet):
             project=project,
             author=self.request.user,
             assigned_user=assigned_user
+        )
+
+
+class CommentViewset(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [ProjectPermissions]
+    lookup_field = 'issue'
+
+    def get_queryset(self):
+        return Comment.objects.all()
+
+    def perform_create(self, serializer):
+        issue = get_object_or_404(Issue, pk=self.kwargs.get('issue_pk'))
+        #url = self.request.build_absolute_uri().replace('comment/', '')
+        serializer.save(
+            author=self.request.user,
+            issue_link=issue
         )

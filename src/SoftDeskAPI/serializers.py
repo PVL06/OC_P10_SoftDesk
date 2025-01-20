@@ -2,8 +2,9 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
+from rest_framework_nested.relations import NestedHyperlinkedRelatedField
 
-from SoftDeskAPI.models import User, Project, Issue
+from SoftDeskAPI.models import User, Project, Issue, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -75,8 +76,35 @@ class IssueSerializer(serializers.ModelSerializer):
             'status',
             'author',
             'assigned_user',
+            'project',
             'created_time'
         ]
         extra_kwargs = {
             'created_time': {'read_only': True} 
+        }
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    uuid = serializers.UUIDField(
+        format='hex',
+        read_only=True
+    )
+    author = serializers.CharField(
+        source='author.username',
+        read_only = True
+    )
+
+    class Meta:
+        model = Comment
+        fields = [
+            'uuid',
+            'description',
+            'author',
+            'issue_link',
+            'created_time'
+        ]
+        extra_kwargs = {
+            'issue_link': {'read_only': True},
+            'created_time': {'read_only': True}
         }

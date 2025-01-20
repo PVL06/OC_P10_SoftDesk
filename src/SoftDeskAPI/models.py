@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
 from django.utils import timezone
+import uuid
 
 
 class CustomUserManager(UserManager):
@@ -124,3 +125,24 @@ class Issue(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Comment(models.Model):
+
+    uuid = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+    description = models.TextField()
+    author = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='comment_author'
+    )
+    issue_link = models.ForeignKey(
+        to=Issue,
+        on_delete=models.CASCADE,
+        related_name='issue'
+    )
+    created_time = models.DateTimeField(auto_now_add=True)
