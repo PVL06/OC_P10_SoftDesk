@@ -98,7 +98,7 @@ class CommentViewset(viewsets.ModelViewSet):
     lookup_field = 'issue'
 
     def get_queryset(self):
-        return Comment.objects.all()
+        return Comment.objects.filter(issue=self.kwargs.get('issue_pk'))
 
     def perform_create(self, serializer):
         issue = get_object_or_404(Issue, pk=self.kwargs.get('issue_pk'))

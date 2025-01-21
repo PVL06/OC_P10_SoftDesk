@@ -1,10 +1,10 @@
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework_nested.relations import NestedHyperlinkedRelatedField
 
-from SoftDeskAPI.models import User, Project, Issue, Comment
+from SoftDeskAPI.models import User, Project, Issue, Comment, Contributors
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,6 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
 
     author = serializers.CharField(source='author.username', read_only=True)
+    contributors = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -47,11 +48,16 @@ class ProjectSerializer(serializers.ModelSerializer):
             'description',
             'type',
             'author',
+            'contributors',
             'created_time'
         ]
         extra_kwargs = {
             'created_time': {'read_only': True}
         }
+
+    def get_contributors(self, instance):
+        queryset = Contributors.objects.filter(project=instance)
+        return [query.contributor.username for query in queryset]
 
 
 class IssueSerializer(serializers.ModelSerializer):
