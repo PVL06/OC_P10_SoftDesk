@@ -1,14 +1,15 @@
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.db.models import Q
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
 
 from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer, IssueSerializer, CommentSerializer
 from SoftDeskAPI.permissions import UserPermissions, ProjectPermissions
 from SoftDeskAPI.models import User, Project, Contributors, Issue, Comment
-from rest_framework import serializers
+from SoftDeskAPI.filters import ProjectFilter, IssueFilter, CommentFilter
 
 
 class UserViewset(viewsets.ModelViewSet):
@@ -23,6 +24,8 @@ class UserViewset(viewsets.ModelViewSet):
 class ProjectViewset(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [ProjectPermissions]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProjectFilter
 
     def get_queryset(self):
         return Project.objects.filter(
@@ -73,6 +76,8 @@ class ProjectViewset(viewsets.ModelViewSet):
 class IssueViewset(viewsets.ModelViewSet):
     serializer_class = IssueSerializer
     permission_classes = [ProjectPermissions]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = IssueFilter
 
     def get_queryset(self):
         return Issue.objects.filter(
@@ -97,7 +102,8 @@ class IssueViewset(viewsets.ModelViewSet):
 class CommentViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [ProjectPermissions]
-    lookup_field = 'issue'
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CommentFilter
 
     def get_queryset(self):
         return Comment.objects.filter(

@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Project(models.Model):
-
+    
     class ProjectType(models.TextChoices):
         BACKEND = 'backend'
         FRONTEND = 'frontend'
