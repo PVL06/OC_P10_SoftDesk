@@ -27,7 +27,7 @@ class ProjectViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return Project.objects.filter(
             Q(project__contributor=self.request.user)
-        )
+        ).order_by('-created_time')
     
     @transaction.atomic
     def perform_create(self, serializer):
@@ -75,7 +75,9 @@ class IssueViewset(viewsets.ModelViewSet):
     permission_classes = [ProjectPermissions]
 
     def get_queryset(self):
-        return Issue.objects.filter(project=self.kwargs.get('project_pk'))
+        return Issue.objects.filter(
+            project=self.kwargs.get('project_pk')
+        ).order_by('-created_time')
 
     @transaction.atomic
     def perform_create(self, serializer):
@@ -98,7 +100,9 @@ class CommentViewset(viewsets.ModelViewSet):
     lookup_field = 'issue'
 
     def get_queryset(self):
-        return Comment.objects.filter(issue=self.kwargs.get('issue_pk'))
+        return Comment.objects.filter(
+            issue=self.kwargs.get('issue_pk')
+        ).order_by('-created_time')
 
     def perform_create(self, serializer):
         issue = get_object_or_404(Issue, pk=self.kwargs.get('issue_pk'))

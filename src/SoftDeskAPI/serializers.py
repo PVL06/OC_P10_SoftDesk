@@ -1,7 +1,6 @@
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from SoftDeskAPI.models import User, Project, Issue, Comment, Contributors
@@ -12,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'username',
             'age',
             'can_be_contacted',
@@ -32,7 +32,11 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(err.messages)
         else:
             return make_password(value)
-    # todo validation sur le username avec nb de caractère minimum
+
+    def validate_username(self, value):
+        if len(value) < 4:
+            raise serializers.ValidationError('Your username must have at least 4 characters.')
+        return value
 
 
 class ProjectSerializer(serializers.ModelSerializer):
