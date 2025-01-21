@@ -130,7 +130,6 @@ class Issue(models.Model):
 class Comment(models.Model):
 
     uuid = models.UUIDField(
-        primary_key=True,
         default=uuid.uuid4,
         editable=False
     )
@@ -140,9 +139,10 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comment_author'
     )
-    issue_link = models.ForeignKey(
+    issue = models.ForeignKey(
         to=Issue,
         on_delete=models.CASCADE,
         related_name='issue'
     )
+    issue_link =  models.URLField()
     created_time = models.DateTimeField(auto_now_add=True)

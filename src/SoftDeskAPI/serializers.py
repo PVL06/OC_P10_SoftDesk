@@ -64,6 +64,10 @@ class IssueSerializer(serializers.ModelSerializer):
         source='assigned_user.username',
         read_only=True
     )
+    project = serializers.CharField(
+        source='project.name',
+        read_only=True
+    )
 
     class Meta:
         model = Issue
@@ -98,6 +102,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'uuid',
             'description',
             'author',

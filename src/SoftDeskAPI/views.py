@@ -15,7 +15,9 @@ class UserViewset(viewsets.ModelViewSet):
 
     serializer_class = UserSerializer
     permission_classes = [UserPermissions]
-    queryset = User.objects.all()
+
+    def get_queryset(self):
+        return User.objects.exclude(is_superuser=True)
 
 
 class ProjectViewset(viewsets.ModelViewSet):
@@ -100,8 +102,9 @@ class CommentViewset(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         issue = get_object_or_404(Issue, pk=self.kwargs.get('issue_pk'))
-        #url = self.request.build_absolute_uri().replace('comment/', '')
+        issue_url = self.request.build_absolute_uri().replace('comment/', '')
         serializer.save(
             author=self.request.user,
-            issue_link=issue
+            issue=issue,
+            issue_link=issue_url
         )
