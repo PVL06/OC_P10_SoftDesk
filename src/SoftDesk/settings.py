@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_nested',
+    'django_filters',
+    'SoftDeskUser',
     'SoftDeskAPI',
-    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -127,7 +128,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'SoftDeskAPI.User'
+AUTH_USER_MODEL = 'SoftDeskUser.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
