@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from SoftDeskAPI.serializers import UserSerializer, ProjectSerializer, IssueSerializer, CommentSerializer
 from SoftDeskAPI.permissions import UserPermissions, ProjectPermissions
 from SoftDeskAPI.models import User, Project, Contributors, Issue, Comment
-from SoftDeskAPI.filters import ProjectFilter, IssueFilter, CommentFilter
+from SoftDeskAPI.filters import ProjectFilter, IssueFilter
 
 
 class UserViewset(viewsets.ModelViewSet):
@@ -102,8 +102,6 @@ class IssueViewset(viewsets.ModelViewSet):
 class CommentViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [ProjectPermissions]
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = CommentFilter
 
     def get_queryset(self):
         return Comment.objects.filter(

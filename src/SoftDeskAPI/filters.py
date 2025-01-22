@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from SoftDeskAPI.models import Project, Issue, Comment
+from SoftDeskAPI.models import Project, Issue
 
 
 class ProjectFilter(filters.FilterSet):
@@ -22,13 +22,4 @@ class IssueFilter(filters.FilterSet):
             'priority': ['exact'],
             'tag': ['exact'],
             'status': ['exact']
-        }
-
-
-class CommentFilter(filters.FilterSet):
-
-    class Meta:
-        model = Comment
-        fields = {
-            'created_time': ['gt', 'lt', 'exact']
         }
