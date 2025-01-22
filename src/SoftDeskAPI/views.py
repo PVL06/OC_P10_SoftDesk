@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from django.db.models import Q
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -29,7 +28,7 @@ class ProjectViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Project.objects.filter(
-            Q(project__contributor=self.request.user)
+            project__contributor=self.request.user
         ).order_by('-created_time')
     
     @transaction.atomic

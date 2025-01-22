@@ -3,6 +3,10 @@ from rest_framework import permissions
 from SoftDeskAPI.models import Contributors
 
 
+"""
+An anonymous user can only access the functionality of registration and login.
+A authenticated user can access the list of users and can modify or delete only their own account.
+"""
 class UserPermissions(permissions.BasePermission):
 
     def has_permission(self, request, view):
@@ -18,13 +22,20 @@ class UserPermissions(permissions.BasePermission):
         actions = ('partial_update', 'destroy')
         conditions = [
             view.action in actions and request.user == obj,
-            view.action == 'retrieve'
+            view.action == 'retrieve' and request.user == obj
         ]
         if any(conditions):
             return True
         return False
 
 
+"""
+Creation of project is accessible only for authenticated people.
+The list of projects only contains those projects where the user is a contributor.
+Deletion or modification of a project, issue, and comment is accessible only to their authors.
+Adding an issue and a comment within a project is accessible only to authenticated users and contributors of
+the project.
+"""
 class ProjectPermissions(permissions.BasePermission):
 
     def has_permission(self, request, view):

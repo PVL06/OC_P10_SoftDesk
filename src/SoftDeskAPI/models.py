@@ -106,7 +106,7 @@ class Issue(models.Model):
         FINISHED = 'finished'
 
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64, unique=True) # enlever le unique ??
+    name = models.CharField(max_length=64)
     description = models.TextField()
     priority = models.CharField(choices=PriorityType.choices, max_length=16)
     tag = models.CharField(choices=TagType.choices, max_length=16)
