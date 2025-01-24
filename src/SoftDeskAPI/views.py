@@ -49,7 +49,8 @@ class ProjectViewset(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def remove_contributor(self, request, pk=None):
-        if request.user != get_object_or_404(Project, pk=pk).author:
+        project = get_object_or_404(Project, pk=pk)
+        if request.user != project.author:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         
         contributor = get_user_model().get_user_by_username(request.POST.get('username'))
@@ -88,6 +89,27 @@ class IssueViewset(viewsets.ModelViewSet):
             author=self.request.user,
             assigned_user=assigned_user
         )
+
+    def partial_update(self, request, *args, **kwargs):
+        assigned_username = request.data.get('assigned_user')
+        serializer = self.serializer_class(
+            self.get_object(),
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        
+        if assigned_username:
+            assigned_user = get_user_model().get_user_by_username(assigned_username)
+            project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
+            if not Contributors.check_user_in_project(assigned_user, project):
+                raise serializers.ValidationError(
+                    {'detail': f'{assigned_user} is not a contributor to the project'}
+                )
+            serializer.save(assigned_user=assigned_user)
+            
+        serializer.save()
+        return Response(serializer.data)
 
 
 class CommentViewset(viewsets.ModelViewSet):
