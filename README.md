@@ -2,7 +2,7 @@
 
 ## :v:Présentation du projet
 
-Ce projet s’inscrit dans le cadre du parcours "Développeur d’application Python" sur OpenClassrooms.
+Ce projet s’inscrit dans le cadre du parcours "Développeur d’application Python" sur OpenClassrooms.\
 Il consiste à développer une API REST avec Django, en utilisant notamment les librairies Django Rest Framework pour l’API et SimpleJWT pour l’authentification.  
 \
 Le but de cette API est de permettre la gestion de projets de développement en équipe. Les fonctionnalités implémentées sont :  
@@ -45,7 +45,7 @@ Dans ce projet, j'ai choisi d'utiliser UV, un gestionnaire Python, pour sa simpl
 * Simplifier l'installation et la mise à jour des dépendances.
 * Gagner du temps grâce à une interface utilisateur conviviale et des commandes rapides.
 
-Ce choix s'inscrit dans une volonté de rendre le projet accessible et facile à maintenir, tout en adoptant des outils performants adaptés aux besoins des développeurs Python modernes.
+Ce choix s'inscrit dans une volonté de rendre le projet accessible et facile à maintenir, tout en adoptant des outils performants adaptés aux besoins des développeurs Python modernes.\
 \
 Récupération du dépôt avec Git.
 ```
@@ -66,10 +66,10 @@ env/Script/activate
 source env/bin/activate
 ```
 ```
-pip install requirement.txt
+pip install requirements.txt
 python manage.py runserver
 ```
 Ce dépôt contient une base de données SQLite d'exemple incluse pour faciliter les tests et la compréhension du projet
 ## :white_check_mark:Utilisation
-Une fois le serveur lancé en local, utilisez cURL pour envoyer des requêtes HTTP directement depuis votre terminal, ou Postman en vous basant sur la documentation fournie.
+Une fois le serveur lancé en local, utilisez cURL pour envoyer des requêtes HTTP directement depuis votre terminal, ou Postman en vous basant sur la documentation fournie.\
 Testez les fonctionnalités.
