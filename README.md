@@ -66,7 +66,7 @@ env/Script/activate
 source env/bin/activate
 ```
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 python manage.py runserver
 ```
 Ce dépôt contient une base de données SQLite d'exemple incluse pour faciliter les tests et la compréhension du projet
