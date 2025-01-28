@@ -22,20 +22,20 @@ class ProjectViewset(viewsets.ModelViewSet):
         return Project.objects.filter(
             project__contributor=self.request.user
         ).order_by('-created_time')
-    
+
     @transaction.atomic
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
         project = get_object_or_404(Project, pk=serializer.data.get('id'))
         user = get_object_or_404(get_user_model(), id=self.request.user.pk)
-        Contributors.objects.create(project=project, contributor=user)    
+        Contributors.objects.create(project=project, contributor=user)
 
     @action(detail=True, methods=['post'])
     def add_contributor(self, request, pk=None):
         project = get_object_or_404(Project, pk=pk)
         if request.user != project.author:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
+
         new_contributor = get_user_model().get_user_by_username(request.POST.get('username'))
         if Contributors.check_user_in_project(new_contributor, pk):
             return Response(
@@ -52,7 +52,7 @@ class ProjectViewset(viewsets.ModelViewSet):
         project = get_object_or_404(Project, pk=pk)
         if request.user != project.author:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
+
         contributor = get_user_model().get_user_by_username(request.POST.get('username'))
         if not Contributors.check_user_in_project(contributor, pk):
             return Response(
@@ -98,7 +98,7 @@ class IssueViewset(viewsets.ModelViewSet):
             partial=True
         )
         serializer.is_valid(raise_exception=True)
-        
+
         if assigned_username:
             assigned_user = get_user_model().get_user_by_username(assigned_username)
             project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
@@ -107,7 +107,7 @@ class IssueViewset(viewsets.ModelViewSet):
                     {'detail': f'{assigned_user} is not a contributor to the project'}
                 )
             serializer.save(assigned_user=assigned_user)
-            
+
         serializer.save()
         return Response(serializer.data)
 

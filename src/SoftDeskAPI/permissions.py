@@ -3,14 +3,14 @@ from rest_framework import permissions
 from SoftDeskAPI.models import Contributors, Issue
 
 
-"""
-Creation of project is accessible only for authenticated people.
-The list of projects only contains those projects where the user is a contributor.
-Deletion or modification of a project, issue, and comment is accessible only to their authors.
-Adding an issue and a comment within a project is accessible only to authenticated users and contributors of
-the project.
-"""
 class ProjectPermissions(permissions.BasePermission):
+    """
+    Creation of project is accessible only for authenticated people.
+    The list of projects only contains those projects where the user is a contributor.
+    Deletion or modification of a project, issue, and comment is accessible only to their authors.
+    Adding an issue and a comment within a project is accessible only to authenticated users and contributors of
+    the project.
+    """
 
     def has_permission(self, request, view):
         if request.user.is_authenticated:
@@ -26,8 +26,8 @@ class ProjectPermissions(permissions.BasePermission):
                 issue_id=issue_id
             )
             conditions = [
-                project_id == None,
-                is_contributor and issue_id == None,
+                project_id is None,
+                is_contributor and issue_id is None,
                 is_contributor and issue_id and valid_project_issue
             ]
             if any(conditions):

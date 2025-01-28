@@ -1,12 +1,11 @@
 from rest_framework import permissions
 
 
-"""
-An anonymous user can only access the functionality of registration and login.
-A authenticated user can access the list of users and can modify or delete only their own account.
-"""
 class UserPermissions(permissions.BasePermission):
-
+    """
+    An anonymous user can only access the functionality of registration and login.
+    A authenticated user can access the list of users and can modify or delete only their own account.
+    """
     def has_permission(self, request, view):
         conditions = [
             view.action == 'create' and request.user.is_anonymous,

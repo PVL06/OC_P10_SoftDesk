@@ -58,7 +58,7 @@ class IssueSerializer(serializers.ModelSerializer):
             'created_time'
         ]
         extra_kwargs = {
-            'created_time': {'read_only': True} 
+            'created_time': {'read_only': True}
         }
 
 
@@ -70,7 +70,7 @@ class CommentSerializer(serializers.ModelSerializer):
     )
     author = serializers.CharField(
         source='author.username',
-        read_only = True
+        read_only=True
     )
 
     class Meta:

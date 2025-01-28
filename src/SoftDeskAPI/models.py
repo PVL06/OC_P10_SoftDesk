@@ -4,7 +4,7 @@ import uuid
 
 
 class Project(models.Model):
-    
+
     class ProjectType(models.TextChoices):
         BACKEND = 'backend'
         FRONTEND = 'frontend'
@@ -105,5 +105,5 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='issue'
     )
-    issue_link =  models.URLField()
+    issue_link = models.URLField()
     created_time = models.DateTimeField(auto_now_add=True)
