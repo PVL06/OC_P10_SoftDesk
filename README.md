@@ -17,14 +17,15 @@ Les permissions d'accès aux différentes données ont nécessité une attention
   
 | Permissions | No authenticated | Authenticated | Contributor | Author |
 |---          |:-:               |:-:            |:-:          |:-:     |
-| Registration                    | O |
-| Login or refresh                | O | 
-| Users list                      |   | O |
-| Contributor project list        |   |   | O |
-| Create new project              |   | O |
-| Access to Project/Issue/Comment |   |   | O |
-| Update Project/Issue/Comment    |   |   |   | O |
-| Delete Project/Issue/Comment    |   |   |   | O |
+| Registration                      | O |
+| Login or refresh                  | O | 
+| Users list                        |   | O |
+| Contributor project list          |   |   | O |
+| Create new project                |   | O |
+| Access to Project/Issue/Comment   |   |   | O |
+| Add or remove project contributor |   |   |   | O |
+| Update Project/Issue/Comment      |   |   |   | O |
+| Delete Project/Issue/Comment      |   |   |   | O |
     
 L'authentification s'effectue grâce au token JWT, qui est placé dans le champ Authorization de l'en-tête (header) de la requête HTTP.  
 Un contributeur est un utilisateur authentifié contribuant à au moins un projet ou étant l'auteur d'un projet.  
